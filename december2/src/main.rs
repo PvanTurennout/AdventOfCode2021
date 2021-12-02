@@ -18,7 +18,24 @@ impl Position {
         return Position::new(0, 0, 0);
     }
 
-    fn execute_command(&mut self, command: Command){
+    fn execute_command_part_1(&mut self, command: Command){
+        if command.direction == "forward" {
+            self.horizontal += command.amount;
+            return;
+        }
+
+        if command.direction == "up" {
+            self.depth -= command.amount as i32;
+            return;
+        }
+
+        if command.direction == "down" {
+            self.depth += command.amount as i32;
+            return;
+        }
+    }
+
+    fn execute_command_part_2(&mut self, command: Command){
         if command.direction == "forward" {
             self.horizontal += command.amount;
             self.depth += command.amount as i32 * self.aim as i32;
@@ -61,8 +78,7 @@ fn lines_from_file() -> Vec<String> {
         .collect()
 }
 
-fn main() {
-    let lines = lines_from_file();
+fn commands_from_lines(lines: Vec<String>) -> Vec<Command> {
     let mut commands = Vec::new();
 
     for line in lines {
@@ -72,11 +88,35 @@ fn main() {
         commands.push(Command::new(dir, am));
     }
 
+    return commands
+}
+
+fn part_1(commands: Vec<Command>) -> i32 {
     let mut position = Position::init();
 
     for command in commands {
-        position.execute_command(command);
+        position.execute_command_part_1(command);
     }
 
-    println!("the amount is {}", position.get_answer());
+    return position.get_answer()
+}
+
+fn part_2(commands: Vec<Command>) -> i32 {
+    let mut position = Position::init();
+
+    for command in commands {
+        position.execute_command_part_2(command);
+    }
+
+    return position.get_answer()
+}
+
+fn main() {
+    let lines = lines_from_file();
+    let commands =  commands_from_lines(lines);
+
+    // let result = part_1(commands);
+    let result = part_2(commands);
+
+    println!("the amount is {}", result);
 }
