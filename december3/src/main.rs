@@ -4,7 +4,7 @@ use std::{
 };
 
 fn lines_from_file() -> Vec<String> {
-    let file = File::open("C:\\Users\\Pieter van Turennout\\Documents\\Projects\\Prive\\AdventOfCode2021\\december3\\src\\input.txt")
+    let file = File::open("C:\\Users\\piete\\Documents\\Projecten\\Prive\\AdventOfCode2021\\december3\\src\\input.txt")
         .expect("no such file");
     let buf = BufReader::new(file);
     buf.lines()
@@ -49,28 +49,53 @@ fn part_1() -> u32{
     return result;
 }
 
-fn part_2() -> u32 {
+fn find(list: Vec<String>, mut index: usize, oxygen: bool) -> String {
+    if list.len() == 1{
+        return list[0].clone();
+    }
+
+    let mut tb_1 = Vec::new();
+    let mut tb_0 = Vec::new();
+
+    for line in list {
+        let bits = line.as_bytes();
+        if bits[index] == 49 {
+            tb_1.push(line);
+        } else {
+            tb_0.push(line);
+        }
+    }
+
+    index += 1;
+
+    return if tb_1.len() < tb_0.len() {
+        if oxygen {
+            find(tb_0, index, oxygen)
+        } else {
+            find(tb_1, index, oxygen)
+        }
+    } else {
+        if oxygen {
+            find(tb_1, index, oxygen)
+        } else {
+            find(tb_0, index, oxygen)
+        }
+    }
+}
+
+fn part_2() {
     let lines = lines_from_file();
+    let oxygen_as_string = find(lines, 0, true);
+    println!("oxygen string: {}", oxygen_as_string);
 
-    let mut oxygen_list = Vec::new();
-    let mut co2_list = Vec::new();
-
-
-
-    while oxygen_list.len() > 1{
-
-    }
-
-    while co2_list.len() > 1{
-
-    }
-
-    return 0;
+    let lines = lines_from_file();
+    let co2_as_string = find(lines, 0, false);
+    println!("co2 string: {}", co2_as_string);
 }
 
 fn main() {
-    // let result = part_1();
-    let result = part_2();
+    let result = part_1();
+    part_2(); // 3736383
 
-    println!("Result should be: {}", result);
+    println!("Result of part 1 is: {}", result);
 }
