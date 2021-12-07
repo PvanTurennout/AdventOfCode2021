@@ -4,7 +4,7 @@ use std::{
 };
 
 fn lines_from_file() -> Vec<String> {
-    let file = File::open("C:\\Users\\piete\\Documents\\Projecten\\Prive\\AdventOfCode2021\\december6\\src\\test.txt")
+    let file = File::open("C:\\Users\\Pieter van Turennout\\Documents\\Projects\\Prive\\AdventOfCode2021\\december6\\src\\input.txt")
         .expect("no such file");
     let buf = BufReader::new(file);
     buf.lines()
@@ -43,18 +43,41 @@ fn part_1() {
         day += 1;
     }
 
-    println!("Result should be: {}", fishes.len()); // 388.419
+    println!("Result is: {}", fishes.len()); // 388.419
 }
 
 fn part_2() {
+    let mut days: [u64; 256] = [0; 256];
     let lines = lines_from_file();
     let numbers = lines[0].split(",");
-    let mut fish_count: i128 = 0;
+    let input_size = numbers.clone().count() as u128;
 
+    for number in numbers {
+        let index = number.parse::<i8>().unwrap() as usize;
+        days[index] += 1;
+    }
 
-    println!("Result should be: {}", fish_count); // 388419
+    for i in 0..(days.len() - 7) {
+        let current = days[i];
+        days[i + 7] += current;
+
+        if (i + 9) < days.len() {
+            days[i + 9] += current;
+        }
+    }
+
+    let mut fish_count: u128 = 0;
+
+    for day in days {
+        fish_count += day as u128;
+    }
+
+    fish_count += input_size;
+
+    println!("Result is: {}", fish_count); // 1740449478328
 }
 
 fn main() {
-    part_2()
+    part_1();
+    part_2();
 }
